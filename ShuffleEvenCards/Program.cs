@@ -12,61 +12,70 @@ using System.Threading.Tasks;
 namespace ShuffleCard1
 {
     class Program
-    {               
+    {
         static void Main(string[] args)
         {
-            const int TOTALCARDS = 9;
-            int[] nCards = new int[TOTALCARDS];
-            int[] stackOdd1 = new int[(TOTALCARDS / 2) + 1];
-            int[] stackEven1 = new int[(TOTALCARDS / 2)];
-            int[] stackEven2 = new int[TOTALCARDS / 2];
-            int[] ShuffledCards = new int[TOTALCARDS];            
-            int j = 0;
-            int totalIterations = 0;
-                        
-            Console.WriteLine("Total cards: {0}", TOTALCARDS);
-
-            // Generate new deck of cards
-            for (int i = 0; i < TOTALCARDS; i++)
+            bool displayMenu = true;
+            while (displayMenu)
             {
-                nCards[i] = i;
-            }
+                displayMenu = MainMenu();
+            }      
+        }
+
+        private static void Play()
+        {
+            Console.Write("\nEnter an Even number to generate a deck of card: ");
+            int n = int.Parse(Console.ReadLine());
 
             // if the total number of cards is odd       
             // split the deck of card into two stacks:
             // stack1 = m+1 and stack2 = m
-            if (TOTALCARDS % 2 != 0)
+            if (n % 2 == 0)
             {
-                for (int i = 0; i < TOTALCARDS; i++)
+                //const int TOTALCARDS = 18;
+                int[] nCards = new int[n];
+                int[] stackEven1 = new int[(n / 2)];
+                int[] stackEven2 = new int[n / 2];
+                int[] ShuffledCards = new int[n];
+                int j = 0;
+                int totalIterations = 0;
+
+                // Generate new deck of cards
+                for (int i = 0; i < n; i++)
                 {
-                    if (i <= TOTALCARDS / 2)
+                    nCards[i] = i;
+                }
+
+                for (int i = 0; i < n; i++)
+                {
+                    if (i < n / 2)
                     {
-                        stackOdd1[i] = nCards[i];
+                        stackEven1[i] = nCards[i];
                         //Console.Write("{0} ", stack1[i]);
                     }
                     else
                     {
-                        j = i - (TOTALCARDS / 2) - 1;
-                        stackEven1[j] = nCards[i];
+                        j = i - (n / 2);
+                        stackEven2[j] = nCards[i];
                         //Console.Write("{0} ", stack2[j]);
                     }
                 }
 
                 while (!ArrayMatch(nCards, ShuffledCards))
                 {
-                    ShuffledCards = Shuffle(stackOdd1, stackEven1);
+                    ShuffledCards = Shuffle(stackEven1, stackEven2);
                     PrintShuffleResult(ShuffledCards);
-                    for (int i = 0; i < TOTALCARDS; i++)
+                    for (int i = 0; i < n; i++)
                     {
-                        if (i <= TOTALCARDS / 2)
+                        if (i < n / 2)
                         {
-                            stackOdd1[i] = ShuffledCards[i];
+                            stackEven1[i] = ShuffledCards[i];
                             //Console.Write("{0} ", stack1[i]);
                         }
                         else
                         {
-                            j = i - (TOTALCARDS / 2) - 1;
-                            stackEven1[j] = ShuffledCards[i];
+                            j = i - (n / 2);
+                            stackEven2[j] = ShuffledCards[i];
                             //Console.Write("{0} ", stack2[j]);
                         }
                     }
@@ -74,10 +83,39 @@ namespace ShuffleCard1
                 }
                 Console.WriteLine("\n\nTotal Iterations: {0}", totalIterations);
             }
-            
+            else
+            {
+                Console.WriteLine("Please enter an Even number!");
+            }
+
+            Console.WriteLine("Press Enter to Continue...");
             Console.ReadLine();
         }
-                
+
+        private static bool MainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Choose an option:");
+            Console.WriteLine("1) Count number of times to shuffle cards back to original stack.");
+            Console.WriteLine("2) Exit");
+            string result = Console.ReadLine();
+
+            if(result == "1")
+            {
+                Play();
+                return true;
+            }
+            else if (result == "2")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
         private static int[] Shuffle(int[] s1, int[] s2)
         {
             int j;
@@ -113,7 +151,7 @@ namespace ShuffleCard1
 
             for (int i = 0; i < n.Length; i++)
             {
-                if(n[i] != m[i])
+                if (n[i] != m[i])
                 {
                     match = false;
                     break;
